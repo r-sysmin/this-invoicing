@@ -132,6 +132,7 @@ const MobileComparisonCard = ({
           variant={plan.buttonVariant}
           size="invofy"
           className="w-full"
+          onClick={() => void selectPlan(plan.name)}
         >
           {plan.buttonText}
         </Button>
@@ -146,9 +147,12 @@ interface PricingComparisonProps {
 }
 
 const PricingComparison = ({ className }: PricingComparisonProps) => {
+  const { selectPlan, checkoutElement } = usePlanCheckout();
   const planKeys: ('starter' | 'professional' | 'business')[] = ['starter', 'professional', 'business'];
 
   return (
+    <>
+    {checkoutElement}
     <section className={cn('px-5 md:px-10 max-[479px]:px-5', className)}>
       <div className="max-w-[100rem] mx-auto">
         {/* Gray Background Container */}
@@ -263,6 +267,7 @@ const PricingComparison = ({ className }: PricingComparisonProps) => {
                                 variant={plan.buttonVariant}
                                 size="invofy"
                                 className="w-full max-w-[160px]"
+                                onClick={() => void selectPlan(plan.name)}
                               >
                                 {plan.buttonText}
                               </Button>
@@ -279,6 +284,7 @@ const PricingComparison = ({ className }: PricingComparisonProps) => {
         </div>
       </div>
     </section>
+    </>
   );
 };
 
