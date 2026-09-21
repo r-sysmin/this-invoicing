@@ -98,7 +98,6 @@ var list_invoices_default = defineTool({
 // src/lib/mcp/tools/get-invoice.ts
 import { defineTool as defineTool2, ToolError } from "npm:@lovable.dev/mcp-js@3.0.1";
 import { z as z2 } from "npm:zod@^3.25.76";
-var toJson = (value) => JSON.parse(JSON.stringify(value ?? null));
 var get_invoice_default = defineTool2({
   name: "get_invoice",
   title: "Get invoice",

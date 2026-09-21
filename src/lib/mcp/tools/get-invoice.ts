@@ -2,7 +2,32 @@ import { defineTool, ToolError } from "@lovable.dev/mcp-js";
 import { z } from "zod";
 import { supabaseForUser } from "../supabase";
 
-const toJson = (value: unknown): unknown => JSON.parse(JSON.stringify(value ?? null));
+const toInvoiceJson = (row: Record<string, unknown>) => ({
+  id: String(row.id),
+  invoice_number: String(row.invoice_number),
+  status: String(row.status),
+  currency: String(row.currency),
+  issue_date: String(row.issue_date),
+  due_date: String(row.due_date),
+  subtotal: Number(row.subtotal),
+  tax_rate: Number(row.tax_rate),
+  discount_rate: Number(row.discount_rate),
+  total_amount: Number(row.total_amount),
+  notes: row.notes ? String(row.notes) : "",
+  payment_terms: row.payment_terms ? String(row.payment_terms) : "",
+  template: String(row.template),
+  client_id: row.client_id ? String(row.client_id) : null,
+  client_details: JSON.parse(JSON.stringify(row.client_details ?? {})) as Record<string, string>,
+  business_details: JSON.parse(JSON.stringify(row.business_details ?? {})) as Record<string, string>,
+  items: (Array.isArray(row.items) ? row.items : []).map((item) => {
+    const line = item as Record<string, unknown>;
+    return {
+      description: String(line.description ?? ""),
+      quantity: Number(line.quantity ?? 0),
+      rate: Number(line.rate ?? 0),
+    };
+  }),
+});
 
 export default defineTool({
   name: "get_invoice",
