@@ -93,7 +93,12 @@ const PricingCards = ({ className, showStagger = true }: PricingCardsProps) => {
 
           {/* Card Body */}
           <div className="p-6 max-[479px]:p-5 flex-1 flex flex-col">
-            <Button variant={plan.buttonVariant} size="invofy" className="w-full mb-6">
+            <Button
+              variant={plan.buttonVariant}
+              size="invofy"
+              className="w-full mb-6"
+              onClick={() => void selectPlan(plan.name)}
+            >
               {plan.buttonText}
             </Button>
             
