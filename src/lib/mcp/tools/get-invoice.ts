@@ -52,7 +52,7 @@ export default defineTool({
     if (error) return { content: [{ type: "text", text: error.message }], isError: true };
     if (!data) throw new ToolError("No matching invoice found.");
 
-    const invoice = toJson(data) as Record<string, unknown>;
+    const invoice = toInvoiceJson(data as Record<string, unknown>);
     return {
       content: [{ type: "text", text: JSON.stringify(invoice, null, 2) }],
       structuredContent: { invoice },

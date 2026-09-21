@@ -98,6 +98,32 @@ var list_invoices_default = defineTool({
 // src/lib/mcp/tools/get-invoice.ts
 import { defineTool as defineTool2, ToolError } from "npm:@lovable.dev/mcp-js@3.0.1";
 import { z as z2 } from "npm:zod@^3.25.76";
+var toInvoiceJson = (row) => ({
+  id: String(row.id),
+  invoice_number: String(row.invoice_number),
+  status: String(row.status),
+  currency: String(row.currency),
+  issue_date: String(row.issue_date),
+  due_date: String(row.due_date),
+  subtotal: Number(row.subtotal),
+  tax_rate: Number(row.tax_rate),
+  discount_rate: Number(row.discount_rate),
+  total_amount: Number(row.total_amount),
+  notes: row.notes ? String(row.notes) : "",
+  payment_terms: row.payment_terms ? String(row.payment_terms) : "",
+  template: String(row.template),
+  client_id: row.client_id ? String(row.client_id) : null,
+  client_details: JSON.parse(JSON.stringify(row.client_details ?? {})),
+  business_details: JSON.parse(JSON.stringify(row.business_details ?? {})),
+  items: (Array.isArray(row.items) ? row.items : []).map((item) => {
+    const line = item;
+    return {
+      description: String(line.description ?? ""),
+      quantity: Number(line.quantity ?? 0),
+      rate: Number(line.rate ?? 0)
+    };
+  })
+});
 var get_invoice_default = defineTool2({
   name: "get_invoice",
   title: "Get invoice",
@@ -118,7 +144,7 @@ var get_invoice_default = defineTool2({
     const { data, error } = await query.maybeSingle();
     if (error) return { content: [{ type: "text", text: error.message }], isError: true };
     if (!data) throw new ToolError("No matching invoice found.");
-    const invoice = toJson(data);
+    const invoice = toInvoiceJson(data);
     return {
       content: [{ type: "text", text: JSON.stringify(invoice, null, 2) }],
       structuredContent: { invoice }
