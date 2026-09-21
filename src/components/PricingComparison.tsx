@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { pricingPlans } from '@/components/PricingCards';
+import { usePlanCheckout } from '@/hooks/usePlanCheckout';
 import checkIcon from '@/assets/icons/check-icon.png';
 
 interface ComparisonFeature {
