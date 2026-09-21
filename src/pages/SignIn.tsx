@@ -123,7 +123,7 @@ const SignIn = () => {
       description: "Welcome back to Invofy.",
     });
     
-    navigate('/dashboard');
+    navigate(landing());
   };
 
   const handleDemoMode = async () => {
@@ -146,7 +146,7 @@ const SignIn = () => {
       description: "Explore Invofy with sample data.",
     });
     
-    navigate('/dashboard');
+    navigate(landing());
   };
 
   if (authLoading) {
