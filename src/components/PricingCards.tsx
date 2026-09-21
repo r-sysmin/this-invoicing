@@ -124,6 +124,7 @@ const PricingCards = ({ className, showStagger = true }: PricingCardsProps) => {
         </div>
       ))}
     </div>
+    </>
   );
 };
 
