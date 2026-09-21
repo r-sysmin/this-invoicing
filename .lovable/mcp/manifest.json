@@ -1,0 +1,284 @@
+{
+  "version": 1,
+  "sdk_version": "3.0.1",
+  "path": "/functions/v1/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://dzftjiqegyphqyfdbidm.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "this-invoicing",
+      "version": "0.1.0",
+      "title": "THIS Invoicing"
+    },
+    "tools": [
+      {
+        "name": "list_invoices",
+        "title": "List invoices",
+        "description": "List the signed-in user's invoices, newest first, optionally filtered by status.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": [
+                "draft",
+                "pending",
+                "paid",
+                "overdue"
+              ],
+              "description": "Only return invoices with this status."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "description": "Maximum number of invoices to return."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_invoice",
+        "title": "Get invoice",
+        "description": "Fetch one of the signed-in user's invoices in full, by id or invoice number.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "The invoice id."
+            },
+            "invoice_number": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The invoice number, e.g. INV-001."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "create_invoice",
+        "title": "Create invoice",
+        "description": "Create a new invoice for the signed-in user with line items, tax and discount.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "invoice_number": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Invoice number, e.g. INV-001."
+            },
+            "issue_date": {
+              "type": "string",
+              "description": "Issue date, YYYY-MM-DD."
+            },
+            "due_date": {
+              "type": "string",
+              "description": "Due date, YYYY-MM-DD."
+            },
+            "currency": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 3,
+              "default": "USD",
+              "description": "3-letter currency code."
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "draft",
+                "pending",
+                "paid",
+                "overdue"
+              ],
+              "default": "draft"
+            },
+            "client_name": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Client name shown on the invoice."
+            },
+            "client_company": {
+              "type": "string",
+              "default": "",
+              "description": "Client company."
+            },
+            "client_email": {
+              "type": "string",
+              "default": "",
+              "description": "Client email."
+            },
+            "client_address": {
+              "type": "string",
+              "default": "",
+              "description": "Client address."
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "description": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "quantity": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "rate": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                },
+                "required": [
+                  "description",
+                  "quantity",
+                  "rate"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "description": "Line items on the invoice."
+            },
+            "tax_rate": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100,
+              "default": 0,
+              "description": "Tax rate as a percentage."
+            },
+            "discount_rate": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100,
+              "default": 0,
+              "description": "Discount rate as a percentage."
+            },
+            "notes": {
+              "type": "string",
+              "default": "",
+              "description": "Notes shown on the invoice."
+            },
+            "payment_terms": {
+              "type": "string",
+              "default": "",
+              "description": "Payment terms text."
+            }
+          },
+          "required": [
+            "invoice_number",
+            "issue_date",
+            "due_date",
+            "client_name",
+            "items"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_clients",
+        "title": "List clients",
+        "description": "List the signed-in user's saved clients, optionally filtered by a name or company search.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "search": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Match client name or company."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50,
+              "description": "Maximum number of clients to return."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "create_client",
+        "title": "Create client",
+        "description": "Save a new client to the signed-in user's client list.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Client name."
+            },
+            "company": {
+              "type": "string",
+              "description": "Company name."
+            },
+            "email": {
+              "type": "string",
+              "format": "email",
+              "description": "Client email."
+            },
+            "address": {
+              "type": "string",
+              "description": "Billing address."
+            },
+            "tax_id": {
+              "type": "string",
+              "description": "Tax or VAT identifier."
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
