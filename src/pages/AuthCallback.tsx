@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DEFAULT_AUTHED_ROUTE, SIGNED_OUT_ROUTE } from "@/lib/auth-routes";
+import { takePostAuthRedirect } from "@/lib/post-auth-redirect";
 
 /**
  * /auth/callback — where every OAuth (Google/Apple) and email-confirmation link lands.
@@ -53,7 +54,8 @@ const AuthCallback = () => {
       } = await supabase.auth.getSession();
 
       if (session) {
-        navigate(DEFAULT_AUTHED_ROUTE, { replace: true });
+        // A pending consent/deep-link target wins over the default landing screen.
+        navigate(takePostAuthRedirect() ?? DEFAULT_AUTHED_ROUTE, { replace: true });
       } else {
         setFailed(true);
       }
