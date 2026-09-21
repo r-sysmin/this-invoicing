@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
+import { PaymentTestModeBanner } from '@/components/PaymentTestModeBanner';
 
 // Lazy load below-the-fold sections
 const LogoCloud = lazy(() => import('@/components/LogoCloud'));
@@ -15,6 +16,7 @@ const Footer = lazy(() => import('@/components/Footer'));
 const Index = () => {
   return (
     <div className="relative min-h-screen bg-background">
+      <PaymentTestModeBanner />
       <Navbar />
       <main>
         <Hero />

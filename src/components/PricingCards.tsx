@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { usePlanCheckout } from '@/hooks/usePlanCheckout';
 import pricingCardBg from '@/assets/pricing-card-bg.webp';
 import checkIcon from '@/assets/icons/check-icon.png';
 import cardIcon from '@/assets/icons/card-icon.png';
@@ -61,7 +62,11 @@ interface PricingCardsProps {
 }
 
 const PricingCards = ({ className, showStagger = true }: PricingCardsProps) => {
+  const { selectPlan, checkoutElement } = usePlanCheckout();
+
   return (
+    <>
+    {checkoutElement}
     <div className={cn('grid grid-cols-3 max-[991px]:grid-cols-1 gap-6 lg:items-start', className)}>
       {pricingPlans.map((plan, index) => (
         <div
@@ -88,7 +93,12 @@ const PricingCards = ({ className, showStagger = true }: PricingCardsProps) => {
 
           {/* Card Body */}
           <div className="p-6 max-[479px]:p-5 flex-1 flex flex-col">
-            <Button variant={plan.buttonVariant} size="invofy" className="w-full mb-6">
+            <Button
+              variant={plan.buttonVariant}
+              size="invofy"
+              className="w-full mb-6"
+              onClick={() => void selectPlan(plan.name)}
+            >
               {plan.buttonText}
             </Button>
             
@@ -114,6 +124,7 @@ const PricingCards = ({ className, showStagger = true }: PricingCardsProps) => {
         </div>
       ))}
     </div>
+    </>
   );
 };
 

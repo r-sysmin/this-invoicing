@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { pricingPlans } from '@/components/PricingCards';
+import { usePlanCheckout } from '@/hooks/usePlanCheckout';
 import checkIcon from '@/assets/icons/check-icon.png';
 
 interface ComparisonFeature {
@@ -57,14 +58,18 @@ const FeatureCell = ({ value }: { value: boolean | string }) => {
 };
 
 // Mobile/Tablet Card Component
-const MobileComparisonCard = ({ 
-  plan, 
-  planKey 
-}: { 
-  plan: typeof pricingPlans[0]; 
+const MobileComparisonCard = ({
+  plan,
+  planKey
+}: {
+  plan: typeof pricingPlans[0];
   planKey: 'starter' | 'professional' | 'business';
 }) => {
+  const { selectPlan, checkoutElement } = usePlanCheckout();
+
   return (
+    <>
+    {checkoutElement}
     <div className={cn(
       'bg-white rounded-[30px] border border-[#f1f1f1] shadow-[0_4px_20px_rgba(0,0,0,0.06)] overflow-hidden',
       planKey === 'professional' && 'ring-2 ring-primary'
@@ -127,11 +132,13 @@ const MobileComparisonCard = ({
           variant={plan.buttonVariant}
           size="invofy"
           className="w-full"
+          onClick={() => void selectPlan(plan.name)}
         >
           {plan.buttonText}
         </Button>
       </div>
     </div>
+    </>
   );
 };
 
@@ -140,9 +147,12 @@ interface PricingComparisonProps {
 }
 
 const PricingComparison = ({ className }: PricingComparisonProps) => {
+  const { selectPlan, checkoutElement } = usePlanCheckout();
   const planKeys: ('starter' | 'professional' | 'business')[] = ['starter', 'professional', 'business'];
 
   return (
+    <>
+    {checkoutElement}
     <section className={cn('px-5 md:px-10 max-[479px]:px-5', className)}>
       <div className="max-w-[100rem] mx-auto">
         {/* Gray Background Container */}
@@ -257,6 +267,7 @@ const PricingComparison = ({ className }: PricingComparisonProps) => {
                                 variant={plan.buttonVariant}
                                 size="invofy"
                                 className="w-full max-w-[160px]"
+                                onClick={() => void selectPlan(plan.name)}
                               >
                                 {plan.buttonText}
                               </Button>
@@ -273,6 +284,7 @@ const PricingComparison = ({ className }: PricingComparisonProps) => {
         </div>
       </div>
     </section>
+    </>
   );
 };
 
