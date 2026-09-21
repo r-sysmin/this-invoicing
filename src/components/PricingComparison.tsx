@@ -58,14 +58,18 @@ const FeatureCell = ({ value }: { value: boolean | string }) => {
 };
 
 // Mobile/Tablet Card Component
-const MobileComparisonCard = ({ 
-  plan, 
-  planKey 
-}: { 
-  plan: typeof pricingPlans[0]; 
+const MobileComparisonCard = ({
+  plan,
+  planKey
+}: {
+  plan: typeof pricingPlans[0];
   planKey: 'starter' | 'professional' | 'business';
 }) => {
+  const { selectPlan, checkoutElement } = usePlanCheckout();
+
   return (
+    <>
+    {checkoutElement}
     <div className={cn(
       'bg-white rounded-[30px] border border-[#f1f1f1] shadow-[0_4px_20px_rgba(0,0,0,0.06)] overflow-hidden',
       planKey === 'professional' && 'ring-2 ring-primary'
@@ -133,6 +137,7 @@ const MobileComparisonCard = ({
         </Button>
       </div>
     </div>
+    </>
   );
 };
 
