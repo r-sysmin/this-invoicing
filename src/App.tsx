@@ -16,6 +16,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import ResetPassword from "./pages/ResetPassword";
 import AuthCallback from "./pages/AuthCallback";
+import OAuthConsent from "./pages/OAuthConsent";
 import Licenses from "./pages/Licenses";
 import NotFound from "./pages/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
@@ -58,6 +59,8 @@ const App = () => (
             {/* Where OAuth and email-confirmation links land. SocialAuthButtons
                 hardcodes this path — without the route, SSO 404s. */}
             <Route path="/auth/callback" element={<AuthCallback />} />
+            {/* Where the backend sends users to approve an external AI client (MCP). */}
+            <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

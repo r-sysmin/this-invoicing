@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { storePostAuthRedirect, takePostAuthRedirect } from '@/lib/post-auth-redirect';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -69,10 +70,19 @@ const SignIn = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDemoLoading, setIsDemoLoading] = useState(false);
 
+  // A `next` param (e.g. the MCP consent screen) must survive the SSO round-trip.
+  const [searchParams] = useSearchParams();
+  const nextParam = searchParams.get('next');
+  useEffect(() => {
+    storePostAuthRedirect(nextParam);
+  }, [nextParam]);
+
+  const landing = () => takePostAuthRedirect() ?? '/dashboard';
+
   // Redirect if already logged in (but allow anonymous users to sign into existing account)
   useEffect(() => {
     if (user && !authLoading && !user.is_anonymous) {
-      navigate('/dashboard');
+      navigate(landing());
     }
   }, [user, authLoading, navigate]);
 
@@ -113,7 +123,7 @@ const SignIn = () => {
       description: "Welcome back to Invofy.",
     });
     
-    navigate('/dashboard');
+    navigate(landing());
   };
 
   const handleDemoMode = async () => {
@@ -136,7 +146,7 @@ const SignIn = () => {
       description: "Explore Invofy with sample data.",
     });
     
-    navigate('/dashboard');
+    navigate(landing());
   };
 
   if (authLoading) {
